@@ -8,6 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 
 import java.util.Map;
+import java.util.concurrent.Callable;
 
 import ca.ianmillican.util.Components;
 import ca.ianmillican.domain.pojo.degree.Degree;
@@ -18,8 +19,11 @@ public class AnalysisDataRegion implements Builder<Region> {
     private AnalyzeTranscriptModel model;
     private record Row(String name, int curr, int required) {}
 
-    public AnalysisDataRegion(AnalyzeTranscriptModel model) {
+    private Callable<Map<Character, Integer>> pwCounts;
+
+    public AnalysisDataRegion(AnalyzeTranscriptModel model, Callable<Map<Character, Integer>> pwCounts) {
         this.model = model;
+        this.pwCounts = pwCounts;
     }
 
     @Override
@@ -40,9 +44,14 @@ public class AnalysisDataRegion implements Builder<Region> {
 
         return table;
     }
-
+    
     private void collectRows(Degree degree, ComparisonResult result, ObservableList<Row> rows) {
-        Map<Character, Integer> pwResult = model.getPWCounts();
+        try {
+            Map<Character, Integer> pwResult = pwCounts.call();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return;
+        }
 
     }
 

@@ -2,6 +2,8 @@ package ca.ianmillican.ui.analyzetranscript;
 
 import java.io.File;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 import java.util.function.Consumer;
 
 import javafx.scene.layout.Region;
@@ -29,6 +31,7 @@ public class AnalyzeTranscriptView implements Builder<Region> {
     //Methods
     private Runnable uploadMethod = null;
     private Consumer<File> fileSelectionMethod = null;
+    private Callable<Map<Character, Integer>> pwCounts = null;
 
     public AnalyzeTranscriptView(AnalyzeTranscriptModel model) {
         this.model = model;
@@ -54,7 +57,7 @@ public class AnalyzeTranscriptView implements Builder<Region> {
     }
 
     public Node buildAnalyzeView() {
-        return new ResultsTableRegion(model).build();
+        return new ResultsTableRegion(model, pwCounts).build();
     }
 
     public Label getErrorLabel() {
@@ -79,6 +82,10 @@ public class AnalyzeTranscriptView implements Builder<Region> {
 
     public StackPane getRoot() {
         return root;
+    }
+
+    public void setPWCourses(Callable<Map<Character, Integer>> pwCounts) {
+        this.pwCounts = pwCounts;
     }
 
 }

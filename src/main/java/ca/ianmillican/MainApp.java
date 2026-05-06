@@ -27,9 +27,9 @@ public class MainApp extends Application {
         EvaluatorService evalService = new EvaluatorService(new RequirementEvaluator());
         CatalogueService cataService = new CatalogueService(new CatalogueParser());
 
-        AnalyzeTranscriptModel model = new AnalyzeTranscriptModel(tService, degService, evalService, cataService);
+        AnalyzeTranscriptModel model = new AnalyzeTranscriptModel();
         AnalyzeTranscriptView view = new AnalyzeTranscriptView(model);
-        AnalyzeTranscriptController controller = new AnalyzeTranscriptController(model, view);
+        AnalyzeTranscriptController controller = new AnalyzeTranscriptController(model, view, tService, degService, evalService, cataService);
 
         Scene scene = new Scene(controller.getView(), 1280, 960);
         scene.getStylesheets().add(getClass().getResource("/styles/AnalyzeTranscript.css").toExternalForm());

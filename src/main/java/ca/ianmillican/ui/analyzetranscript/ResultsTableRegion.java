@@ -1,6 +1,8 @@
 package ca.ianmillican.ui.analyzetranscript;
 
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.Callable;
 
 import javafx.scene.control.TableView;
 import javafx.scene.control.TableColumn;
@@ -30,8 +32,11 @@ public class ResultsTableRegion implements Builder<Region> {
     //DTO for viewing the analyzed transcript
     private record Row(String name, String creditHours, String status) {}
 
-    public ResultsTableRegion(AnalyzeTranscriptModel model) {
+    private Callable<Map<Character, Integer>> pwCounts;
+
+    public ResultsTableRegion(AnalyzeTranscriptModel model, Callable<Map<Character, Integer>> pwCounts) {
         this.model = model;
+        this.pwCounts = pwCounts;
     }
 
     @Override
@@ -70,7 +75,7 @@ public class ResultsTableRegion implements Builder<Region> {
                 rightBox.getChildren().add(wrapper);
             }
         }
-        rightBox.getChildren().add(new AnalysisDataRegion(model).build());
+        rightBox.getChildren().add(new AnalysisDataRegion(model, pwCounts).build());
         container.getChildren().addAll(leftBox, rightBox);
         container.setMaxWidth(Double.MAX_VALUE);
         container.setMaxHeight(Double.MAX_VALUE);
@@ -89,7 +94,7 @@ public class ResultsTableRegion implements Builder<Region> {
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         TableColumn<Row, String> nameCol = Components.createColumn("Course", Row::name);
         TableColumn<Row, String> chCol = Components.createColumn("Credit Hours", Row::creditHours, "non-name-col");
-        TableColumn<Row, String> statusCol = Components.createColumn("Status", Row::status, "cleanon-name-col");
+        TableColumn<Row, String> statusCol = Components.createColumn("Status", Row::status, "non-name-col");
         nameCol.prefWidthProperty().bind(table.widthProperty().multiply(0.75));
         chCol.prefWidthProperty().bind(table.widthProperty().multiply(0.15));
         statusCol.prefWidthProperty().bind(table.widthProperty().multiply(0.10));
@@ -142,5 +147,4 @@ public class ResultsTableRegion implements Builder<Region> {
         }
     }
 
-    
 }
